@@ -1,3 +1,4 @@
+from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -10,7 +11,10 @@ class Settings(BaseSettings):
     postgres_port: int
     postgres_username: str
 
-    kafka_bootstrap_servers: str = "localhost:9092"
+    kafka_bootstrap_servers: str = Field(
+        default="localhost:9092",
+        validation_alias="KAFKA_BROKERS",
+    )
     kafka_topic_ads: str = "ads"
     kafka_consumer_group: str = "search-service"
     ad_service_url: str = "http://localhost:8000"
