@@ -60,7 +60,7 @@ services:
       POSTGRES_PORT: 5432
       POSTGRES_USERNAME: postgres
       KAFKA_BOOTSTRAP_SERVERS: redpanda:29092
-      AD_SERVICE_URL: http://ad-service:8002
+      AD_SERVICE_URL: http://ad-service:8000
     depends_on:
       search-postgres:
         condition: service_healthy
