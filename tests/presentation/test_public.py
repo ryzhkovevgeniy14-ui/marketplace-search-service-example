@@ -6,10 +6,24 @@ from tests.conftest import FakeAdSource, FakeUnitOfWork, make_snapshot
 
 
 async def _seed(uow: FakeUnitOfWork, ad_source: FakeAdSource) -> None:
-    ad_source.set(make_snapshot(ad_id=1, title="MacBook Pro 14", price=180000,
-                                category="Электроника", city="Москва"))
-    ad_source.set(make_snapshot(ad_id=2, title="MacBook Air", price=90000,
-                                category="Электроника", city="Питер"))
+    ad_source.set(
+        make_snapshot(
+            ad_id=1,
+            title="MacBook Pro 14",
+            price=180000,
+            category="Электроника",
+            city="Москва",
+        )
+    )
+    ad_source.set(
+        make_snapshot(
+            ad_id=2,
+            title="MacBook Air",
+            price=90000,
+            category="Электроника",
+            city="Питер",
+        )
+    )
     for ad_id in (1, 2):
         await IndexAd(uow, ad_source).execute(ad_id)
 
