@@ -57,7 +57,8 @@ class FakeSearchRepository(SearchRepository):
         if query is not None and query.strip():
             needle = query.lower()
             items = [
-                d for d in items
+                d
+                for d in items
                 if needle in d.title.lower() or needle in d.description.lower()
             ]
         if category is not None:
@@ -80,10 +81,13 @@ class FakeSearchRepository(SearchRepository):
         return items[offset : offset + limit], total
 
     async def suggest(self, prefix: str, limit: int) -> list[str]:
-        titles = sorted({
-            d.title for d in self._docs.values()
-            if d.title.lower().startswith(prefix.lower())
-        })
+        titles = sorted(
+            {
+                d.title
+                for d in self._docs.values()
+                if d.title.lower().startswith(prefix.lower())
+            }
+        )
         return titles[:limit]
 
     def snapshot(self) -> dict[int, SearchDocument]:
