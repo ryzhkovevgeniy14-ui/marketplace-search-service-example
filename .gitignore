@@ -19,3 +19,9 @@ CLAUDE.md
 
 # macOS
 .DS_Store
+
+# Logs
+*.log
+
+# Claude Code settings
+.claude/
