@@ -113,6 +113,7 @@ jobs:
 
   deploy:
     needs: build
+    if: false  # Temporarily disabled during trace_id implementation
     runs-on: ubuntu-latest
 
     steps:
