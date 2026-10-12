@@ -13,7 +13,7 @@ class Settings(BaseSettings):
 
     kafka_bootstrap_servers: str = Field(
         default="localhost:9092",
-        validation_alias="KAFKA_BROKERS",
+        validation_alias="KAFKA_BOOTSTRAP_SERVERS",
     )
     kafka_topic_ads: str = "ads"
     kafka_consumer_group: str = "search-service"
