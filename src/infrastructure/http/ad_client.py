@@ -3,7 +3,9 @@ import urllib.parse
 
 import httpx
 
+from src.application.exceptions import AdSourceUnavailableError
 from src.application.ports.ad_source import AdSnapshot, AdSource
+from src.infrastructure.tracing.context import get_trace_id
 
 logger = logging.getLogger(__name__)
 
@@ -15,13 +17,27 @@ class AdServiceAdSource(AdSource):
 
     async def get(self, ad_id: int) -> AdSnapshot | None:
         url = urllib.parse.urljoin(self._base_url, f"internal/ads/{ad_id}")
+        headers = {}
+        trace_id = get_trace_id()
+        if trace_id:
+            headers["X-Trace-Id"] = trace_id
         try:
-            resp = await self._client.get(url)
+            resp = await self._client.get(url, headers=headers)
         except httpx.HTTPError as exc:
-            logger.warning("failed to fetch ad %s: %s", ad_id, exc)
+            logger.warning("ad source unavailable for ad %s: %s", ad_id, exc)
+            raise AdSourceUnavailableError(
+                f"Network error fetching ad {ad_id}: {exc}"
+            ) from exc
+
+        if resp.status_code == 404:
             return None
+
         if resp.status_code != 200:
-            return None
+            logger.warning("ad source returned %s for ad %s", resp.status_code, ad_id)
+            raise AdSourceUnavailableError(
+                f"HTTP {resp.status_code} fetching ad {ad_id}"
+            )
+
         data = resp.json()
         return AdSnapshot(
             ad_id=data["id"],
